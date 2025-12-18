@@ -1,6 +1,5 @@
-import { GRID_SIZE } from "./CrosswordModel.js";
-import DictionarySource from './NewSolver/DictionarySource.js';
-import { Crossword as CrosswordClass } from "./NewSolver/Crossword.js";
+import { G as GRID_SIZE } from "./CrosswordModel.js";
+import { C as Crossword } from "./NewSolver-Crossword.js";
 class FillTab {
   constructor(model, gridController) {
     this.model = model;
@@ -97,15 +96,18 @@ class FillTab {
     this.suggestionsList.innerHTML = "Thinking...";
     const matches = this.findMatches(pattern);
     this.shuffleArray(matches);
-	let valid = [];
-	for (let word of matches) {
-		if (this.isValidCandidateV2(word, indices, 
-									this.model.direction, 
-									[...this.model.gridContent])) {
-			valid.push(word);
-		}	
-		if (valid.length>=50) break;
-	}
+    let valid = [];
+    for (let word of matches) {
+      if (this.isValidCandidateV2(
+        word,
+        indices,
+        this.model.direction,
+        [...this.model.gridContent]
+      )) {
+        valid.push(word);
+      }
+      if (valid.length >= 50) break;
+    }
     this.renderSuggestions(valid, indices);
   }
   shuffleArray(array) {
@@ -206,7 +208,7 @@ class FillTab {
       if (length < 3 || length > 15) return false;
       return true;
     }
-    const generator = new CrosswordClass({
+    const generator = new Crossword({
       data: gridMatrix,
       data_type: "grid",
       wordsource: this.model.dictSource,
@@ -237,5 +239,5 @@ class FillTab {
   }
 }
 export {
-  FillTab
+  FillTab as F
 };

@@ -1,15 +1,16 @@
-import { C as CrosswordModel, G as GRID_SIZE } from "./modules/CrosswordModel.js";
-import { G as GridController } from "./modules/GridController.js";
-import { S as StructureTab } from "./modules/StructureTab.js";
-import { F as FillTab } from "./modules/FillTab.js";
-import { S as SolverTab } from "./modules/SolverTab.js";
-import { R as ReviewTab } from "./modules/ReviewTab.js";
-import { D as DictionaryTab } from "./modules/DictionaryTab.js";
-import { E as ExportTab } from "./modules/ExportTab.js";
-import { P as ParametersTab } from "./modules/ParametersTab.js";
-import { F as FileSystemManager } from "./modules/FileSystemManager.js";
-import { D as DictionarySource } from "./modules/NewSolver/DictionarySource.js";
-import "./modules/NewSolver/Crossword.js";
+import { C as CrosswordModel, G as GRID_SIZE } from "./CrosswordModel.js";
+import { G as GridController } from "./GridController.js";
+import { S as StructureTab } from "./StructureTab.js";
+import { F as FillTab } from "./FillTab.js";
+import { S as SolverTab } from "./SolverTab.js";
+import { R as ReviewTab } from "./ReviewTab.js";
+import { D as DictionaryTab } from "./DictionaryTab.js";
+import { E as ExportTab } from "./ExportTab.js";
+import { P as ParametersTab } from "./ParametersTab.js";
+import { F as FileSystemManager } from "./FileSystemManager.js";
+import { D as DictionarySource } from "./NewSolver-DictionarySource.js";
+import "./NewSolver-Crossword.js";
+import "./jspdf.bundled.js";
 (function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) {

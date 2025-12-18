@@ -730,6 +730,7 @@ class Crossword {
       }
       for (let suggestion_index = 0; suggestion_index < suggestions.length; suggestion_index++) {
         const suggestion = suggestions[suggestion_index];
+        if (this.used.has(suggestion)) continue;
         const saved_cache = /* @__PURE__ */ new Map();
         for (let [key, arr] of this.domain_cache.entries()) {
           saved_cache.set(key, [...arr]);
@@ -758,11 +759,10 @@ class Crossword {
     };
     if (this.timeout_happened(timeout)) throw new CWTimeoutError();
     if (stopcheck && stopcheck()) throw new CWStopCheck();
- 
-	(async () => {await new Promise(r => setTimeout(r, 1));})();
-
-
-	if (word_slot === null) {
+    (async () => {
+      await new Promise((r) => setTimeout(r, 1));
+    })();
+    if (word_slot === null) {
       word_slot = this.find_next_word_by_mrv();
     }
     if (word_slot === null) {
@@ -817,16 +817,8 @@ class Crossword {
   }
 }
 export {
-  BLANK,
-  CWError,
-  CWInfo,
-  CWStopCheck,
-  CWTimeoutError,
-  Coords,
-  Crossword,
-  DEFAULT_GRID,
-  FILLER,
-  FILLER2,
-  Word,
-  Wordgrid
+  BLANK as B,
+  Crossword as C,
+  FILLER as F,
+  FILLER2 as a
 };

@@ -17,7 +17,7 @@
 
 body {
   margin: 0;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   background-color: var(--bg-color);
   color: var(--text-color);
   display: flex;
@@ -66,6 +66,7 @@ p {
   flex-direction: column;
   gap: 1.5rem;
   align-items: center;
+  position: relative;
 }
 
 .crossword-grid {
@@ -143,146 +144,6 @@ p {
   /* Red-300 */
   color: #7f1d1d !important;
   /* Red-900 */
-}
-
-:root {
-  --bg-color: #0f172a;
-  --text-color: #f8fafc;
-  --primary-color: #3b82f6;
-  --primary-hover: #2563eb;
-  --secondary-color: #334155;
-  --secondary-hover: #475569;
-  --grid-bg: #ffffff;
-  --cell-border: #cbd5e1;
-  --block-color: #1e293b;
-  --highlight-color: #fef08a;
-  /* Yellow for active word */
-  --selected-color: #facc15;
-  /* Darker yellow for active cell */
-  --cell-size: 40px;
-}
-
-body {
-  margin: 0;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  display: flex;
-  justify-content: center;
-  min-height: 100vh;
-}
-
-#app {
-  max-width: 1200px;
-  width: 100%;
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
-}
-
-header {
-  text-align: center;
-}
-
-h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin: 0 0 0.5rem 0;
-  background: linear-gradient(to right, #60a5fa, #a78bfa);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-p {
-  color: #94a3b8;
-  margin: 0;
-}
-
-.main-content {
-  display: flex;
-  gap: 2rem;
-  width: 100%;
-  justify-content: center;
-  align-items: flex-start;
-}
-
-.game-area {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  align-items: center;
-}
-
-.crossword-grid {
-  display: grid;
-  grid-template-columns: repeat(15, var(--cell-size));
-  grid-template-rows: repeat(15, var(--cell-size));
-  gap: 1px;
-  background-color: var(--secondary-color);
-  border: 4px solid var(--secondary-color);
-  border-radius: 4px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-
-.cell {
-  width: var(--cell-size);
-  height: var(--cell-size);
-  background-color: var(--grid-bg);
-  cursor: pointer;
-  transition: background-color 0.1s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  color: #000;
-  user-select: none;
-  position: relative;
-  font-size: 18px;
-}
-
-.cell-number {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  font-size: 10px;
-  line-height: 1;
-  font-weight: normal;
-  color: #334155;
-  pointer-events: none;
-}
-
-.cell span {
-  z-index: 1;
-}
-
-.cell span.locked {
-  color: #000000;
-  font-weight: 900;
-}
-
-.cell span.solved {
-  color: #3b82f6;
-  /* Blue */
-  font-weight: 600;
-}
-
-.cell:hover {
-  background-color: #f1f5f9;
-}
-
-.cell.is-block {
-  background-color: var(--block-color);
-  border-color: var(--block-color);
-}
-
-.cell.is-highlighted {
-  background-color: var(--highlight-color);
-}
-
-.cell.is-selected {
-  background-color: var(--selected-color);
 }
 
 .controls {
@@ -540,6 +401,23 @@ textarea:focus {
   color: #e2e8f0;
 }
 
+.clue-display {
+  background-color: #0f172a;
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+  color: #cbd5e1;
+  font-size: 0.85rem;
+  min-height: 2rem;
+}
+
+.suggestions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow-y: auto;
+  max-height: 300px;
+}
+
 /* Modern Dialog Styles */
 dialog {
   padding: 0;
@@ -547,7 +425,6 @@ dialog {
   background: transparent;
   width: auto;
   height: auto;
-  /* Remove fixed 100% height to allow auto-sizing */
   max-width: 500px;
   margin: auto;
 }
@@ -568,7 +445,6 @@ dialog::backdrop {
   gap: 1rem;
   color: #f8fafc;
   max-height: 80vh;
-  /* Limit height of the card */
 }
 
 #load-dialog h2 {
@@ -579,20 +455,16 @@ dialog::backdrop {
   border-bottom: 1px solid #334155;
   padding-bottom: 0.75rem;
   flex-shrink: 0;
-  /* Header doesn't shrink */
 }
 
 #load-dialog .load-group {
   flex: 1;
-  /* Take available space */
   overflow-y: auto;
-  /* Scroll this area */
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   padding-right: 0.5rem;
   min-height: 100px;
-  /* Minimum height */
 }
 
 /* Custom Radio Items in Dialog */
@@ -653,7 +525,6 @@ dialog::backdrop {
 }
 
 #load-dialog button {
-  /* Reset */
   width: auto;
   background: none;
   color: inherit;
@@ -735,17 +606,6 @@ input[type=range]::-webkit-slider-runnable-track {
   border-radius: 2px;
 }
 
-
-.game-area {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  align-items: center;
-}
-
-/* ... (existing styles) ... */
-
 /* Solver Popup Toast */
 .popup {
   position: absolute;
@@ -753,9 +613,7 @@ input[type=range]::-webkit-slider-runnable-track {
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: #fefce8;
-  /* Light yellow (yellow-50) */
   color: #713f12;
-  /* Dark brownish yellow (yellow-900) for contrast */
   padding: 1.5rem;
   border-radius: 0.5rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -766,11 +624,24 @@ input[type=range]::-webkit-slider-runnable-track {
   text-align: center;
   max-width: 300px;
   border: 1px solid #facc15;
-  /* yellow-400 */
   font-weight: 500;
 }
 
 .popup.show {
   opacity: 1;
   pointer-events: auto;
+}
+
+.defs-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.solver-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }

@@ -1,4 +1,4 @@
-import { D as DictionarySource } from "./NewSolver/DictionarySource.js";
+import { D as DictionarySource } from "./NewSolver-DictionarySource.js";
 class ParametersTab {
   constructor(model) {
     this.model = model;

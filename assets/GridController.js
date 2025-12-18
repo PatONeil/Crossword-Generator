@@ -1,136 +1,143 @@
-import { GRID_SIZE } from './CrosswordModel.js';
-
-export class GridController {
-    constructor(containerId, model) {
-        this.container = document.getElementById(containerId);
-        this.model = model;
-        this.onCellClick = null; // Callback
-    }
-
-    render() {
-        this.container.innerHTML = '';
-
-        for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
-            const cell = document.createElement('div');
-            cell.classList.add('cell');
-            cell.dataset.index = i;
-
-            if (this.model.gridState[i] === 1) {
-                cell.classList.add('is-block');
-            }
-
-            if (this.model.gridContent[i]) {
-                const letterSpan = document.createElement('span');
-                letterSpan.textContent = this.model.gridContent[i];
-                cell.appendChild(letterSpan);
-            }
-
-            cell.addEventListener('click', (e) => {
-                if (this.onCellClick) this.onCellClick(i, e);
-            });
-            this.container.appendChild(cell);
+import { G as GRID_SIZE } from "./CrosswordModel.js";
+class GridController {
+  constructor(containerId, model) {
+    this.container = document.getElementById(containerId);
+    this.model = model;
+    this.onCellClick = null;
+  }
+  updateWords(initDefinitions = false) {
+    for (let word of this.model.words) {
+      let contents = "";
+      let indicies = this.getWordIndices(word.index, word.direction);
+      for (let ndx of indicies) {
+        contents += this.model.gridContent[ndx];
+      }
+      word.word = contents;
+      if (initDefinitions) {
+        if (this.model.dictionary[contents]) {
+          word.definition = this.model.dictionary[contents].defs[0];
         }
-        this.updateNumbers();
-        this.updateHighlights();
+      }
     }
-
-    updateNumbers() {
-        let currentNumber = 1;
-        for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
-            const cell = this.container.children[i];
-            const row = Math.floor(i / GRID_SIZE);
-            const col = i % GRID_SIZE;
-
-            const existingNum = cell.querySelector('.cell-number');
-            if (existingNum) existingNum.remove();
-
-            if (this.model.gridState[i] === 1) continue;
-
-            let isAcrossStart = false;
-            let isDownStart = false;
-
-            if (col < GRID_SIZE - 1 && this.model.gridState[i + 1] === 0) {
-                if (col === 0 || this.model.gridState[i - 1] === 1) isAcrossStart = true;
-            }
-            if (row < GRID_SIZE - 1 && this.model.gridState[i + GRID_SIZE] === 0) {
-                if (row === 0 || this.model.gridState[i - GRID_SIZE] === 1) isDownStart = true;
-            }
-
-            if (isAcrossStart || isDownStart) {
-                const numSpan = document.createElement('span');
-                numSpan.classList.add('cell-number');
-                numSpan.textContent = currentNumber;
-                cell.appendChild(numSpan);
-                currentNumber++;
-            }
-        }
+  }
+  render() {
+    this.container.innerHTML = "";
+    for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
+      const cell = document.createElement("div");
+      cell.classList.add("cell");
+      cell.dataset.index = i;
+      if (this.model.gridState[i] === 1) {
+        cell.classList.add("is-block");
+      }
+      if (this.model.gridContent[i]) {
+        const letterSpan = document.createElement("span");
+        letterSpan.textContent = this.model.gridContent[i];
+        cell.appendChild(letterSpan);
+      }
+      cell.addEventListener("click", (e) => {
+        if (this.onCellClick) this.onCellClick(i, e);
+      });
+      this.container.appendChild(cell);
     }
-
-    updateHighlights(highlightWord = true) {
-        const idx = this.model.selectedCellIndex;
-
-        // Clear old
-        Array.from(this.container.children).forEach(c => {
-            c.classList.remove('is-selected', 'is-highlighted', 'related-clue', 'invalid-word');
-        });
-
-        if (idx === -1) return;
-
-        // Highlight selected
-        if (this.container.children[idx]) {
-            this.container.children[idx].classList.add('is-selected');
+    this.updateNumbers();
+    this.updateHighlights();
+  }
+  updateNumbers() {
+    this.model.words = [];
+    let currentNumber = 1;
+    for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
+      const cell = this.container.children[i];
+      const row = Math.floor(i / GRID_SIZE);
+      const col = i % GRID_SIZE;
+      const existingNum = cell.querySelector(".cell-number");
+      if (existingNum) existingNum.remove();
+      if (this.model.gridState[i] === 1) continue;
+      let isAcrossStart = false;
+      let isDownStart = false;
+      if (col < GRID_SIZE - 1 && this.model.gridState[i + 1] === 0) {
+        if (col === 0 || this.model.gridState[i - 1] === 1) {
+          this.model.words.push({
+            number: currentNumber,
+            index: i,
+            direction: "across",
+            word: null,
+            definition: null
+          });
+          isAcrossStart = true;
         }
-
-        if (highlightWord) {
-            // Highlight word
-            const indices = this.getWordIndices(idx, this.model.direction);
-            indices.forEach(i => {
-                if (this.container.children[i]) this.container.children[i].classList.add('is-highlighted');
-            });
+      }
+      if (row < GRID_SIZE - 1 && this.model.gridState[i + GRID_SIZE] === 0) {
+        if (row === 0 || this.model.gridState[i - GRID_SIZE] === 1) {
+          this.model.words.push({
+            number: currentNumber,
+            index: i,
+            direction: "down",
+            word: null,
+            definition: null
+          });
+          isDownStart = true;
         }
+      }
+      if (isAcrossStart || isDownStart) {
+        const numSpan = document.createElement("span");
+        numSpan.classList.add("cell-number");
+        numSpan.textContent = currentNumber;
+        cell.appendChild(numSpan);
+        currentNumber++;
+      }
     }
-
-    getWordIndices(index, direction) {
-        if (this.model.gridState[index] === 1) return [];
-
-        const row = Math.floor(index / GRID_SIZE);
-        const col = index % GRID_SIZE;
-        const indices = [];
-
-        if (direction === 'across') {
-            // Find start
-            let c = col;
-            while (c > 0 && this.model.gridState[row * GRID_SIZE + c - 1] === 0) c--;
-            // Collect
-            while (c < GRID_SIZE && this.model.gridState[row * GRID_SIZE + c] === 0) {
-                indices.push(row * GRID_SIZE + c);
-                c++;
-            }
-        } else {
-            // Find start
-            let r = row;
-            while (r > 0 && this.model.gridState[(r - 1) * GRID_SIZE + col] === 0) r--;
-            // Collect
-            while (r < GRID_SIZE && this.model.gridState[r * GRID_SIZE + col] === 0) {
-                indices.push(r * GRID_SIZE + col);
-                r++;
-            }
-        }
-        return indices;
+  }
+  updateHighlights(highlightWord = true) {
+    const idx = this.model.selectedCellIndex;
+    Array.from(this.container.children).forEach((c) => {
+      c.classList.remove("is-selected", "is-highlighted", "related-clue", "invalid-word");
+    });
+    if (idx === -1) return;
+    if (this.container.children[idx]) {
+      this.container.children[idx].classList.add("is-selected");
     }
-
-    // Helper to update just one cell content visually (optimization)
-    updateCellContent(index) {
-        const cell = this.container.children[index];
-        const letter = this.model.gridContent[index];
-        const oldSpan = cell.querySelector('span:not(.cell-number)');
-        if (oldSpan) oldSpan.remove();
-
-        if (letter) {
-            const span = document.createElement('span');
-            span.textContent = letter;
-            // We could add 'locked' class here if we tracked it
-            cell.appendChild(span);
-        }
+    if (highlightWord) {
+      const indices = this.getWordIndices(idx, this.model.direction);
+      indices.forEach((i) => {
+        if (this.container.children[i]) this.container.children[i].classList.add("is-highlighted");
+      });
     }
+  }
+  getWordIndices(index, direction) {
+    if (this.model.gridState[index] === 1) return [];
+    const row = Math.floor(index / GRID_SIZE);
+    const col = index % GRID_SIZE;
+    const indices = [];
+    if (direction === "across") {
+      let c = col;
+      while (c > 0 && this.model.gridState[row * GRID_SIZE + c - 1] === 0) c--;
+      while (c < GRID_SIZE && this.model.gridState[row * GRID_SIZE + c] === 0) {
+        indices.push(row * GRID_SIZE + c);
+        c++;
+      }
+    } else {
+      let r = row;
+      while (r > 0 && this.model.gridState[(r - 1) * GRID_SIZE + col] === 0) r--;
+      while (r < GRID_SIZE && this.model.gridState[r * GRID_SIZE + col] === 0) {
+        indices.push(r * GRID_SIZE + col);
+        r++;
+      }
+    }
+    return indices;
+  }
+  // Helper to update just one cell content visually (optimization)
+  updateCellContent(index) {
+    const cell = this.container.children[index];
+    const letter = this.model.gridContent[index];
+    const oldSpan = cell.querySelector("span:not(.cell-number)");
+    if (oldSpan) oldSpan.remove();
+    if (letter) {
+      const span = document.createElement("span");
+      span.textContent = letter;
+      cell.appendChild(span);
+    }
+  }
 }
+export {
+  GridController as G
+};
